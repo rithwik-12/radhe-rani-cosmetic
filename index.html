@@ -38,11 +38,11 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 15px;bor
 <main>
 <section id="loginView" class="loginbox">
 <div style="text-align:center;font-size:34px;margin-bottom:3px">🌸</div><h2 style="text-align:center">स्वागत है!</h2><p style="text-align:center;color:#9a6b85;font-size:13px;letter-spacing:1px;margin-top:-7px">RADHE RANI • STOCK STUDIO</p><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><h2>🔐 दुकान लॉगिन</h2>
-<p class="muted">डेमो अकाउंट से खोलें। असली ऑनलाइन लॉगिन के लिए सुरक्षित सर्वर/क्लाउड सेटअप जरूरी है।</p>
-<label>यूज़रनेम</label><input id="username" autocomplete="username" placeholder="यूज़रनेम">
+<p class="muted">Firebase ईमेल और पासवर्ड से सुरक्षित लॉगिन करें। पहले Firebase में यूज़र और उसकी भूमिका सेट करें।</p>
+<label>ईमेल</label><input id="username" type="email" autocomplete="username" placeholder="Firebase में बनाया गया ईमेल">
 <label>पासवर्ड</label><input id="password" type="password" autocomplete="current-password" placeholder="पासवर्ड">
 <div class="actions"><button onclick="login()">लॉगिन करें</button></div>
-<div class="notice">डेमो लॉगिन: <b>admin / 123456</b> या कर्मचारी: <b>staff / 123456</b></div>
+<div class="notice">यहाँ कोई डेमो पासवर्ड नहीं है। Firebase Authentication में बनाया गया ईमेल और पासवर्ड इस्तेमाल करें।</div>
 <p id="loginError" class="bad"></p>
 </section>
 
@@ -50,7 +50,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 15px;bor
 <div class="actions no-print" style="justify-content:space-between;align-items:center">
 <div>लॉगिन: <b id="who"></b> <span class="muted" id="role"></span></div><button class="secondary" onclick="logout()">लॉगआउट</button>
 </div>
-<div class="notice"><b>महत्वपूर्ण:</b> यह संस्करण इस ब्राउज़र में डेटा सेव करता है। अलग-अलग मोबाइल पर एक ही स्टॉक देखने के लिए इसे Firebase जैसे ऑनलाइन डेटाबेस से जोड़ना और वेबसाइट को प्रकाशित करना होगा। अभी इसमें वास्तविक क्लाउड सिंक चालू नहीं है।</div>
+<div class="notice"><b>ऑनलाइन स्टॉक:</b> Firebase Firestore से जुड़ा है। दूसरे डिवाइस पर वही स्टॉक देखने के लिए उसी Firebase प्रोजेक्ट के अधिकृत खाते से लॉगिन करें।</div>
 <div class="grid">
 <div class="stat"><span class="muted">कुल प्रोडक्ट</span><strong id="sProducts">0</strong></div>
 <div class="stat"><span class="muted">कुल उपलब्ध पीस</span><strong id="sUnits">0</strong></div>
@@ -103,11 +103,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 15px;bor
 </section>
 
 <section id="tab-team" class="panel hidden">
-<h2>👥 कर्मचारी खाते (डेमो)</h2>
-<p class="muted">यह केवल डेमो है। कर्मचारी पासवर्ड असली सुरक्षित सर्वर में बनाए जाने चाहिए।</p>
-<div class="row"><div><label>कर्मचारी यूज़रनेम</label><input id="newUser" placeholder="जैसे staff2"></div><div><label>पासवर्ड</label><input id="newPass" type="password" placeholder="कम-से-कम 6 अक्षर"></div></div>
-<div class="actions"><button onclick="addStaff()">कर्मचारी जोड़ें</button></div>
-<div class="tablewrap"><table><thead><tr><th>यूज़रनेम</th><th>भूमिका</th><th>स्थिति</th></tr></thead><tbody id="staffRows"></tbody></table></div>
+<h2>👥 कर्मचारी खाते</h2>
+<p>सुरक्षा के लिए कर्मचारी खाते Firebase Console → Authentication में बनाएँ। फिर Firestore के <b>users</b> संग्रह में उस खाते के UID वाला दस्तावेज़ बनाएँ और <b>role: "staff"</b> सेट करें। मालिक की भूमिका केवल मालिक के UID पर <b>role: "owner"</b> रखकर सेट करें।</p>
 </section>
 
 <section id="tab-backup" class="panel hidden">
@@ -117,10 +114,24 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 15px;bor
 <p class="muted">ध्यान दें: बैकअप डाउनलोड करने से डेटा दूसरे मोबाइल में अपने आप सिंक नहीं होता।</p>
 </section>
 </section>
-<footer>राधे रानी कॉस्मेटिक्स एंड गिफ्ट हब • स्टॉक मैनेजर डेमो</footer>
+<footer>राधे रानी कॉस्मेटिक्स एंड गिफ्ट हब • Firebase ऑनलाइन स्टॉक मैनेजर</footer>
 </main>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script>
-const KEY='radheRaniStockDemo_v2';
+// Firebase web config supplied for the Radhe Rani project.
+const firebaseConfig={apiKey:"AIzaSyA1cCdJfKo_WGCY0qYKw-iGNznwBc8-a4E",authDomain:"radhe-rani-cosmetics-9f93f.firebaseapp.com",projectId:"radhe-rani-cosmetics-9f93f",storageBucket:"radhe-rani-cosmetics-9f93f.firebasestorage.app",messagingSenderId:"415769778899",appId:"1:415769778899:web:b37cf7ec0215d1e2159226",measurementId:"G-KW9FPK4X0N"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore(), storeRef=db.collection('store').doc('main');
+let data={products:[],sales:[],staff:[]};
+let current=null, cart=[], editingId=null, cloudUnsubscribe=null, saving=false, cloudReady=false;
+function load(){} 
+async function persist(){if(!current||!cloudReady)return;try{await storeRef.set({products:data.products,sales:data.sales,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}catch(e){alert('ऑनलाइन सेव नहीं हुआ: '+e.message);}}
+async function login(){const email=document.getElementById('username').value.trim(),password=document.getElementById('password').value;const err=document.getElementById('loginError');err.textContent='';if(!email||!password){err.textContent='ईमेल और पासवर्ड भरें।';return}try{await auth.signInWithEmailAndPassword(email,password);}catch(e){err.textContent='लॉगिन नहीं हुआ: '+e.message;}}
+function logout(){auth.signOut();}
+auth.onAuthStateChanged(async user=>{if(cloudUnsubscribe){cloudUnsubscribe();cloudUnsubscribe=null;}cloudReady=false;current=null;document.getElementById('app').classList.add('hidden');document.getElementById('loginView').classList.remove('hidden');if(!user)return;try{const profile=await db.collection('users').doc(user.uid).get();if(!profile.exists||!['owner','staff'].includes(profile.data().role)){await auth.signOut();document.getElementById('loginError').textContent='इस खाते की भूमिका सेट नहीं है। Firebase Firestore में users/'+user.uid+' दस्तावेज़ बनाएँ।';return;}current={uid:user.uid,username:user.email,role:profile.data().role};document.getElementById('loginView').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('who').textContent=user.email;document.getElementById('role').textContent='('+(current.role==='owner'?'मालिक':'कर्मचारी')+')';document.getElementById('teamTab').classList.toggle('hidden',current.role!=='owner');cloudUnsubscribe=storeRef.onSnapshot(async snap=>{if(!snap.exists){if(current.role==='owner'){await storeRef.set({products:[],sales:[]});return;}alert('अभी दुकान का ऑनलाइन डेटा नहीं बना है। मालिक से संपर्क करें।');return;}const d=snap.data();data={products:Array.isArray(d.products)?d.products:[],sales:Array.isArray(d.sales)?d.sales:[],staff:[]};cloudReady=true;renderAll();},e=>alert('डेटा पढ़ने में समस्या: '+e.message));}catch(e){await auth.signOut();document.getElementById('loginError').textContent='खाता जाँचने में समस्या: '+e.message;}});
+
 let data={products:[],sales:[],staff:[{username:'admin',password:'123456',role:'मालिक'},{username:'staff',password:'123456',role:'कर्मचारी'}]};
 let current=null, cart=[], editingId=null;
 function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(x&&Array.isArray(x.products))data={...data,...x};}catch(e){}}
@@ -143,11 +154,11 @@ function removeCart(i){cart.splice(i,1);renderCart()}function clearCart(){cart=[
 function completeSale(){if(!cart.length){alert('पहले बिल में सामान जोड़ें।');return}for(const x of cart){const p=data.products.find(p=>p.id===x.id);if(!p||p.qty<x.qty){alert('स्टॉक बदल गया है। मात्रा दोबारा जाँचें।');return}}const sale={bill:'RR-'+Date.now().toString().slice(-8),date:new Date().toLocaleString('hi-IN'),customer:document.getElementById('customer').value.trim()||'वॉक-इन ग्राहक',items:cart.map(x=>({...x})),total:cart.reduce((s,x)=>s+x.qty*x.price,0),profit:cart.reduce((s,x)=>s+x.qty*(x.price-x.buy),0),by:current.username};for(const x of cart)data.products.find(p=>p.id===x.id).qty-=x.qty;data.sales.unshift(sale);persist();renderAll();document.getElementById('receipt').innerHTML=receiptHTML(sale);cart=[];renderCart();document.getElementById('customer').value='';}
 function receiptHTML(s){return `<div class="receipt" id="printReceipt"><h3>🌸 राधे रानी कॉस्मेटिक्स एंड गिफ्ट हब</h3><p style="text-align:center">बिक्री बिल</p><p><b>बिल नं.:</b> ${esc(s.bill)}<br><b>तारीख:</b> ${esc(s.date)}<br><b>ग्राहक:</b> ${esc(s.customer)}</p><table><thead><tr><th>सामान</th><th>मात्रा</th><th>रेट</th><th>कुल</th></tr></thead><tbody>${s.items.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.qty}</td><td>${money(x.price)}</td><td>${money(x.qty*x.price)}</td></tr>`).join('')}</tbody></table><h3 style="text-align:right">कुल: ${money(s.total)}</h3><p style="text-align:center">धन्यवाद! फिर आइए।</p><div class="actions no-print"><button onclick="window.print()">🖨️ बिल प्रिंट / PDF</button></div></div>`;}
 function renderHistory(){document.getElementById('historyRows').innerHTML=data.sales.map(s=>`<tr><td>${esc(s.bill)}</td><td>${esc(s.date)}</td><td>${esc(s.customer)}</td><td>${s.items.reduce((n,x)=>n+x.qty,0)}</td><td>${money(s.total)}</td><td class="${s.profit<0?'bad':'good'}">${money(s.profit)}</td></tr>`).join('')||'<tr><td colspan="6">अभी बिक्री रिकॉर्ड नहीं है।</td></tr>';}
-function renderStaff(){document.getElementById('staffRows').innerHTML=data.staff.map(s=>`<tr><td>${esc(s.username)}</td><td>${esc(s.role)}</td><td>सक्रिय (डेमो)</td></tr>`).join('');}
-function addStaff(){if(current?.role!=='मालिक'){alert('केवल मालिक कर्मचारी जोड़ सकता है।');return}const username=document.getElementById('newUser').value.trim(),password=document.getElementById('newPass').value;if(username.length<3||password.length<6){alert('यूज़रनेम कम-से-कम 3 और पासवर्ड 6 अक्षर का रखें।');return}if(data.staff.some(s=>s.username===username)){alert('यह यूज़रनेम पहले से मौजूद है।');return}data.staff.push({username,password,role:'कर्मचारी'});persist();document.getElementById('newUser').value='';document.getElementById('newPass').value='';renderStaff();alert('डेमो कर्मचारी जोड़ दिया गया।');}
+function renderStaff(){}
+function addStaff(){alert('कर्मचारी खाते Firebase Console में बनाएँ; वेबसाइट में पासवर्ड सेव नहीं किए जाते।');}
 function backup(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='radhe-rani-backup.json';a.click();URL.revokeObjectURL(a.href);}
-function restoreBackup(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.products)||!Array.isArray(d.sales)||!Array.isArray(d.staff))throw 0;if(!confirm('मौजूदा डेटा बदलकर बैकअप लोड करें?'))return;data=d;persist();renderAll();alert('बैकअप लोड हो गया।');}catch(err){alert('यह सही बैकअप फाइल नहीं है।')}};r.readAsText(f);e.target.value='';}
+function restoreBackup(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.products)||!Array.isArray(d.sales))throw 0;if(!confirm('मौजूदा डेटा बदलकर बैकअप लोड करें?'))return;data=d;persist();renderAll();alert('बैकअप लोड हो गया।');}catch(err){alert('यह सही बैकअप फाइल नहीं है।')}};r.readAsText(f);e.target.value='';}
 function exportSales(){const rows=[['Bill','Date','Customer','Items','Total','Estimated Profit'],...data.sales.map(s=>[s.bill,s.date,s.customer,s.items.map(x=>x.name+' x'+x.qty).join('; '),s.total,s.profit])];const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='radhe-rani-sales.csv';a.click();URL.revokeObjectURL(a.href);}
 function renderAll(){renderStats();renderProducts();renderSaleSelect();renderCart();renderHistory();renderStaff();}
-load();</script>
+</script>
 </body></html>
